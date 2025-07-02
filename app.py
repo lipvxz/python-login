@@ -12,9 +12,13 @@ def login():
     usuario = request.form['usuario']
     senha = request.form['senha']
     if usuario == 'admin' and senha == '1234':
-        return render_template('bemvindo.html')
+        return redirect('/bemvindo')
     else:
         return '<h3>Usuário ou senha inválidos!</h3><a href="/">Tentar novamente</a>'
+
+@app.route('/bemvindo')
+def bemvindo():
+    return render_template('bemvindo.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
