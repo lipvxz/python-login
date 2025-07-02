@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect
+import os
 
 app = Flask(__name__)
 
@@ -16,4 +17,5 @@ def login():
         return '<h3>Usuário ou senha inválidos!</h3><a href="/">Tentar novamente</a>'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
