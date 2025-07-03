@@ -1,151 +1,60 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
-
-body{
-    margin: 0; 
-    font-family: "Noto Sans", sans-serif;
-}
-
-body * {
-    box-sizing: border-box;
-}
-
-.main-login{
-    width: 100vw;
+body {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100vh;
-    background-color: rgb(23, 23, 177);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.left-login{
-   width: 50vw; 
-   height: 100vh;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   flex-direction: column;
-}
-
-.left-login > h1 {
-    font-size: 3vw;
-    color:rgb(255, 115, 0);
-}
-
-.left-login-image{
-    width: 35vw;
-}
-
-.right-login{
-    width: 50vw; 
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.card-login{
-    width: 60%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 30px 35px;
-    background-color: rgb(25, 52, 201);
-    border-radius: 20px;
-    box-shadow: 20px 20px 10px #00000056;
-}
-
-.card-login > h1 {
-    color:rgb(230, 130, 16);
-    font-weight: 800;
     margin: 0;
 }
 
-.textfield{
+.login-container {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    text-align: center;
+    width: 300px;
+}
+
+.login-container h1 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+input[type="text"],
+input[type="password"] {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-   align-items: flex-start;
-   justify-content: center;
-   margin: 10px 0px;
-}
-
-.textfield > input{
-    width: 100%;
-    border: 0;
-    border-radius: 10px;
-    padding: 15px;
-    background-color: #ffffff9c;
-    color:rgb(0, 0, 0);
-    font-size: 12pt;
-    box-shadow: 0px 10px 10px #00000056;
-    outline: none;
-    box-sizing: border-box;
-}
-
-.textfield > label {
-    color:rgb(255, 255, 255);
-    margin-bottom: 10px ;
-}
-
-.textfield > input::placeholder{
-    color:rgb(0, 0, 0)
-}
-
-.btn-login{
-    width: 100%;
-    padding: 16px 0px;
-    margin: 25px;
+    padding: 12px;
+    margin: 10px 0;
     border: none;
     border-radius: 8px;
-    outline: none;
-    text-transform: uppercase;
-    font-weight: 800;
-    letter-spacing: 3px;
-    color: black;
-    background-color: rgb(219, 123, 13);
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
+
+input::placeholder {
+    color: #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #00c9ff;
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: bold;
     cursor: pointer;
-    box-shadow: 0px 10px 20px -12px #e7f70d ;
+    transition: background 0.3s ease;
 }
 
-@media only screen and (max-width: 950px) {
-    .card-login {
-        width: 80%;
-    }
+button:hover {
+    background-color: #00b3e6;
 }
 
-@media only screen and (max-width: 600px) {
-    .main-login {
-        flex-direction: column;
-        align-items: center; /* Garante que o login fique centralizado */
-    }
-
-    .left-login > h1 {
-        display: none;
-    }
-
-    .left-login {
-        width: 100%;
-        height: auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .left-login-image {
-        width: 40vw; /* Reduzi um pouco a largura para não ocupar muito espaço */
-    }
-
-    .right-login {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .card-login {
-        width: 90%; /* Aumenta no mobile para ocupar mais espaço */
-        padding: 25px; /* Evita que fique pequeno demais */
-    }
+.foguete {
+    margin-top: 20px;
+    width: 80px;
 }
