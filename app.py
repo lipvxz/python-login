@@ -12,7 +12,8 @@ conn = psycopg2.connect(
     port="5432",
     database="login_flask_db",
     user="login_flask_db_user",
-    password="DB_PASSWORD"
+    password=os.environ.get("DB_PASSWORD")
+
 )
 
 cursor = conn.cursor()
