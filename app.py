@@ -73,9 +73,14 @@ def login():
 @app.route('/bemvindo')
 def bemvindo():
     if 'usuario_id' in session:
-        return render_template('bemvindo.html', usuario=session['usuario_nome'])
+        return render_template(
+            'bemvindo.html',
+            usuario=session['usuario_nome'],
+            is_admin=session.get('is_admin', False)
+        )
     else:
         return redirect('/')
+
 
 
 @app.route('/invaliduser')
