@@ -2,32 +2,18 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Espacial</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>Login</title>
 </head>
 <body>
-    <div class="main-login"> 
-        <div class="left-login">
-            <h1> Seja Bem Vindo<br>Faça seu login aqui </h1>
-            <img src="{{ url_for('static', filename='foguete.svg') }}" alt="Foguete">
-        </div>
-        <div class="right-login">
-            <div class="card-login">
-                <h1>Entrar</h1>
-                <form method="post" action="login">
-                <div class="textfield">
-                    <label for="usuario">Usuário</label>
-                    <input type="text" name="usuario" placeholder="Usuário" required>
-                </div>
-                <div class="textfield">
-                    <label for="senha">Senha</label>
-                    <input type="password" name="senha" placeholder="Senha" required>
-                </div>
-                <button class="btn-login">Entrar</button>
-                </form>
-            </div>
-        </div>
+    <div class="login-container">
+        <h1>🚀 Bem-vindo de volta, comandante!</h1>
+        <form action="/login" method="POST">
+            <input type="text" name="usuario" placeholder="👤 Usuário" required>
+            <input type="password" name="senha" placeholder="🔒 Senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+        <img src="{{ url_for('static', filename='foguete.svg') }}" alt="Foguete" class="foguete">
     </div>
 </body>
 </html>
