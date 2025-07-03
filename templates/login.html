@@ -6,14 +6,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="login-container">
-        <h1>🚀 Bem-vindo de volta, comandante!</h1>
-        <form action="/login" method="POST">
-            <input type="text" name="usuario" placeholder="👤 Usuário" required>
-            <input type="password" name="senha" placeholder="🔒 Senha" required>
-            <button type="submit">Entrar</button>
-            <p>Não tem uma conta? <a href="/register" class="cadastro-link">Cadastre-se aqui</a></p>
-            
+<div class="login-container">
+    <h1>🚀 Bem-vindo de volta, comandante!</h1>
+    <form action="/login" method="POST">
+        <input type="email" name="email" placeholder="📧 Email" required>
+        <input type="password" name="senha" placeholder="🔒 Senha" required>
+        <button type="submit">Entrar</button>
+        <p>Não tem uma conta? <a href="/register" class="cadastro-link">Cadastre-se aqui</a></p>
+    </form>
+</div>
+
 
         </form>
     </div>

@@ -1,40 +1,77 @@
 from flask import Flask, request, render_template, redirect, session
-import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
+import psycopg2
 import os
 
 app = Flask(__name__)
 app.secret_key = 'lipin_super_secreto'  # Esta linha vem logo DEPOIS de app = Flask(__name__)
+
+# Conexão com PostgreSQL (substitua a senha quando estiver disponível)
+conn = psycopg2.connect(
+    host="dpg-d1jf4cbe5dus73fs606g-a",
+    port="5432",
+    database="login_flask_db",
+    user="login_flask_db_user",
+    password = os.environ.get("DB_PASSWORD")
+
+)
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS usuarios (
+    id SERIAL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    senha TEXT NOT NULL
+)
+""")
+conn.commit()
 
 
 @app.route('/')
 def index():
     return render_template('login.html')
 
+@app.route('/register', methods=['GET', 'POST'])
+def cadastro():
+    if request.method == 'POST':
+        nome = request.form['nome']
+        email = request.form['email']
+        senha = generate_password_hash(request.form['senha'])
 
-@app.route('/login', methods=['POST'])
+        try:
+            cursor.execute("INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)", (nome, email, senha))
+            conn.commit()
+            return redirect('/')
+        except psycopg2.Error as e:
+            conn.rollback()
+            return f"Erro ao cadastrar: {e.pgerror}"
+
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    usuario = request.form['usuario']
-    senha = request.form['senha']
+    if request.method == 'POST':
+        email = request.form['email']
+        senha = request.form['senha']
 
-    conn = sqlite3.connect('usuarios.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT senha FROM usuarios WHERE usuario = ?", (usuario,))
-    resultado = cursor.fetchone()
-    conn.close()
+        cursor.execute("SELECT * FROM usuarios WHERE email = %s", (email,))
+        usuario = cursor.fetchone()
 
-    if resultado and check_password_hash(resultado[0], senha):
-        session['usuario'] = usuario  # Salva o nome do usuário na sessão
-        return redirect('/bemvindo')
-    else:
-        return redirect('/invaliduser')
+        if usuario and check_password_hash(usuario[3], senha):
+            session['usuario_id'] = usuario[0]
+            session['usuario_nome'] = usuario[1]
+            return redirect('/bemvindo')  # ou qualquer rota protegida que você tenha
+        else:
+            return "Email ou senha incorretos."
 
+    return render_template('login.html')
 
 
 @app.route('/bemvindo')
 def bemvindo():
-    if 'usuario' in session:
-        return render_template('bemvindo.html', usuario=session['usuario'])
+    if 'usuario_id' in session:
+        return render_template('bemvindo.html', usuario=session['usuario_nome'])
     else:
         return redirect('/')
 
@@ -43,28 +80,10 @@ def bemvindo():
 def invalid_user():
     return render_template('invaliduser.html')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        usuario = request.form['usuario']
-        senha = request.form['senha']
-        senha_hash = generate_password_hash(senha)
-
-        conn = sqlite3.connect('usuarios.db')
-        cursor = conn.cursor()
-        try:
-            cursor.execute("INSERT INTO usuarios (usuario, senha) VALUES (?, ?)", (usuario, senha_hash))
-            conn.commit()
-            return '<h3>✅ Cadastro realizado com sucesso!</h3><a href="/">Fazer login</a>'
-        except sqlite3.IntegrityError:
-            return '<h3>❌ Usuário já existe!</h3><a href="/register">Tentar outro</a>'
-        finally:
-            conn.close()
-    return render_template('register.html')
-
 @app.route('/logout')
 def logout():
-    session.pop('usuario', None)
+    session.pop('usuario_id', None)
+    session.pop('usuario_nome', None)
     return redirect('/')
 
 
