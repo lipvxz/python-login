@@ -134,6 +134,22 @@ def debug_admin():
     html += "</ul>"
     return html
 
+@app.route('/promover_admin')
+def promover_admin():
+    if 'usuario_id' not in session:
+        return redirect('/')
+
+    cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE id = %s", (session['usuario_id'],))
+    conn.commit()
+    return "✅ Você agora é admin! Faça logout e login novamente."
+
+@app.route('/forcar_admin')
+def forcar_admin():
+    cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE email = 'filipematos1821@gmail.com'")
+    conn.commit()
+    return "✅ Conta promovida a admin com sucesso!"
+
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
