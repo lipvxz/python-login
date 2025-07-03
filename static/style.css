@@ -58,3 +58,38 @@ button:hover {
     margin-top: 20px;
     width: 80px;
 }
+
+.welcome-container {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    text-align: center;
+    width: 400px;
+    margin: auto;
+}
+
+.welcome-container h1 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.welcome-container p {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+.logout-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff4b5c;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #e04352;
+}
