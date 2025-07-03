@@ -61,6 +61,7 @@ def login():
         if usuario and check_password_hash(usuario[3], senha):
             session['usuario_id'] = usuario[0]
             session['usuario_nome'] = usuario[1]
+            session['is_admin'] = usuario[4]
             return redirect('/bemvindo')  # ou qualquer rota protegida que você tenha
         else:
             return render_template('invaliduser.html')
@@ -87,6 +88,20 @@ def logout():
     session.pop('usuario_nome', None)
     return redirect('/')
 
+@app.route('/admin')
+def admin():
+    if not session.get('is_admin'):
+        return redirect('/')
+    
+    cursor.execute("SELECT nome, email FROM usuarios")
+    usuarios = cursor.fetchall()
+    return render_template('admin.html', usuarios=usuarios)
+
+cursor.execute("ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE")
+conn.commit()
+
+cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE email = 'filipematos1821@email.com'")
+conn.commit()
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

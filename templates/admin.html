@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>👨‍💼 Painel de Admin</title>
+</head>
+<body>
+    <h1>📋 Lista de Usuários Cadastrados</h1>
+    <ul>
+        {% for nome, email in usuarios %}
+            <li><strong>{{ nome }}</strong> — {{ email }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/logout">Sair</a>
+</body>
+</html>

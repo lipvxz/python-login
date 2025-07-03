@@ -4,11 +4,36 @@
     <meta charset="UTF-8">
     <title>Bem-vindo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+      <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .admin-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #238636;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .admin-btn:hover {
+            background-color: #2ea043;
+        }
+    </style>
 </head>
 <body>
     <div class="welcome-container">
         <h1>🚀 Missão iniciada com sucesso!</h1>
         <p>Bem-vindo ao painel de controle, comandante {{ usuario }}!.</p>
+        {% if session.is_admin %}
+    <p><a href="/admin">🔐 Acessar painel de administração</a></p>
+{% endif %}
         <a href="/logout" class="logout-btn">Sair</a>
     </div>
 </body>
