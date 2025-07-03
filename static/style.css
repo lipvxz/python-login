@@ -93,3 +93,31 @@ button:hover {
 .logout-btn:hover {
     background-color: #e04352;
 }
+
+.cadastro-link {
+    color: #00bfff;
+    font-weight: bold;
+}
+
+.cadastro-link:hover {
+    color: #ffffff;
+}
+
+.login-text {
+    margin-top: 20px;
+    text-align: center;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.login-link {
+    color: #00bfff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
