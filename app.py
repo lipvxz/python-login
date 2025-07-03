@@ -23,6 +23,14 @@ def bemvindo():
 @app.route('/invaliduser')
 def invalid_user():
     return render_template('invaliduser.html')
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        usuario = request.form['usuario']
+        senha = request.form['senha']
+        # Aqui futuramente vamos salvar no banco
+        return '<h3>Cadastro recebido!</h3><a href="/">Fazer login</a>'
+    return render_template('register.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

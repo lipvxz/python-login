@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <h1>📝 Criar nova conta</h1>
+        <form action="/register" method="POST">
+            <input type="text" name="usuario" placeholder="👤 Novo usuário" required>
+            <input type="password" name="senha" placeholder="🔒 Nova senha" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+        <a href="/" class="logout-btn">Já tenho conta</a>
+    </div>
+</body>
+</html>
