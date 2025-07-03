@@ -55,7 +55,7 @@ def login():
         email = request.form['email']
         senha = request.form['senha']
 
-        cursor.execute("SELECT * FROM usuarios WHERE email = %s", (email,))
+        cursor.execute("SELECT id, nome, email, senha, is_admin FROM usuarios WHERE email = %s", (email,))
         usuario = cursor.fetchone()
 
         if usuario and check_password_hash(usuario[3], senha):
@@ -107,6 +107,22 @@ conn.commit()
 
 cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE email = 'filipematos1821@email.com'")
 conn.commit()
+
+# Criação da tabela (se ainda não existir)
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS usuarios (
+    id SERIAL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    senha TEXT NOT NULL
+)
+""")
+conn.commit()
+
+# Adiciona a coluna is_admin se ainda não existir
+cursor.execute("ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE")
+conn.commit()
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
