@@ -63,7 +63,8 @@ def login():
             session['usuario_nome'] = usuario[1]
             return redirect('/bemvindo')  # ou qualquer rota protegida que você tenha
         else:
-            return "Email ou senha incorretos."
+            return render_template('invaliduser.html')
+
 
     return render_template('login.html')
 
