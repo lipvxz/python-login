@@ -8,13 +8,13 @@ app.secret_key = 'lipin_super_secreto'  # Esta linha vem logo DEPOIS de app = Fl
 
 # Conexão com PostgreSQL (substitua a senha quando estiver disponível)
 conn = psycopg2.connect(
-    host="dpg-d1jf4cbe5dus73fs606g-a",
+    host="dpg-d1jf4cbe5dus73fs606g-a.oregon-postgres.render.com",
     port="5432",
     database="login_flask_db",
     user="login_flask_db_user",
-    password = os.environ.get("DB_PASSWORD")
-
+    password="DB_PASSWORD"
 )
+
 cursor = conn.cursor()
 
 cursor.execute("""
@@ -123,6 +123,15 @@ conn.commit()
 cursor.execute("ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE")
 conn.commit()
 
+@app.route('/debug_admin')
+def debug_admin():
+    cursor.execute("SELECT nome, email, is_admin FROM usuarios")
+    usuarios = cursor.fetchall()
+    html = "<h2>🔍 Debug de Admins</h2><ul>"
+    for nome, email, is_admin in usuarios:
+        html += f"<li>{nome} — {email} — is_admin: {is_admin}</li>"
+    html += "</ul>"
+    return html
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
