@@ -106,7 +106,7 @@ def admin():
 cursor.execute("ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE")
 conn.commit()
 
-cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE email = 'filipematos1821@email.com'")
+cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE email = 'filipematos1821@gmail.com'")
 conn.commit()
 
 # Criação da tabela (se ainda não existir)
