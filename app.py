@@ -149,6 +149,59 @@ def forcar_admin():
     conn.commit()
     return "✅ Conta promovida a admin com sucesso!"
 
+# reset_token.py
+from itsdangerous import URLSafeTimedSerializer
+import os
+
+def generate_token(email):
+    serializer = URLSafeTimedSerializer(os.getenv("SECRET_KEY"))
+    return serializer.dumps(email, salt="password-reset-salt")
+
+def confirm_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(os.getenv("SECRET_KEY"))
+    try:
+        return serializer.loads(token, salt="password-reset-salt", max_age=expiration)
+    except:
+        return False
+
+from flask_mail import Mail, Message
+from reset_token import generate_token, confirm_token
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+mail = Mail(app)
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        token = generate_token(email)
+        link = url_for('reset_password', token=token, _external=True)
+        msg = Message("Redefina sua senha", recipients=[email])
+        msg.body = f"Clique no link para redefinir sua senha: {link}"
+        mail.send(msg)
+        return "E-mail enviado com sucesso!"
+    return render_template('forgot_password.html')
+
+@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    email = confirm_token(token)
+    if not email:
+        return "Token inválido ou expirado."
+    if request.method == 'POST':
+        nova_senha = request.form['senha']
+        hash_senha = bcrypt.hashpw(nova_senha.encode('utf-8'), bcrypt.gensalt())
+        cur = conn.cursor()
+        cur.execute("UPDATE usuarios SET senha = %s WHERE email = %s", (hash_senha, email))
+        conn.commit()
+        return "Senha atualizada com sucesso!"
+    return render_template('reset_password.html')
+
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
