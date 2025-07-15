@@ -121,3 +121,12 @@ button:hover {
     text-decoration: underline;
 }
  
+.link-recuperacao {
+  margin-top: 10px;
+}
+
+.esqueci-senha {
+  color: #00bfff;
+  text-decoration: none;
+}
+
