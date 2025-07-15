@@ -1,0 +1,16 @@
+
+# Ignorar o arquivo .env
+.env
+
+# Ignorar pastas de dependências
+__pycache__/
+venv/
+.venv/
+
+# Ignorar arquivos temporários
+*.log
+*.pyc
+
+# Ignorar diretórios do sistema
+.DS_Store
+Thumbs.db
