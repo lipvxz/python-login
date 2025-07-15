@@ -179,3 +179,6 @@ def confirm_token(token, expiration=3600):
         return False
     return email
 # Inicia o servidor
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
