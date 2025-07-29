@@ -24,28 +24,36 @@ app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
 mail = Mail(app)
 
-# Conexão com o banco de dados
-conn = psycopg2.connect(
-    host="dpg-d1jf4cbe5dus73fs606g-a.oregon-postgres.render.com",
-    port="5432",
-    database="login_flask_db",
-    user="login_flask_db_user",
-    password=os.environ.get("DB_PASSWORD")
-)
-cursor = conn.cursor()
 
-# Criação da tabela e coluna admin
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS usuarios (
-    id SERIAL PRIMARY KEY,
-    nome TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    senha TEXT NOT NULL
-)
-""")
-cursor.execute("ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE")
-cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE email = 'filipematos1821@gmail.com'")
-conn.commit()
+# Função utilitária para obter conexão e cursor do banco
+def get_db():
+    conn = psycopg2.connect(
+        host="dpg-d1jf4cbe5dus73fs606g-a.oregon-postgres.render.com",
+        port="5432",
+        database="login_flask_db",
+        user="login_flask_db_user",
+        password=os.environ.get("DB_PASSWORD")
+    )
+    return conn, conn.cursor()
+
+# Criação da tabela e coluna admin (executa só se conseguir conectar)
+try:
+    conn, cursor = get_db()
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id SERIAL PRIMARY KEY,
+        nome TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        senha TEXT NOT NULL
+    )
+    """)
+    cursor.execute("ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE")
+    cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE email = 'filipematos1821@gmail.com'")
+    conn.commit()
+    cursor.close()
+    conn.close()
+except Exception as e:
+    print(f"[AVISO] Não foi possível conectar ao banco para criar tabela: {e}")
 
 # Rotas
 @app.route('/')
@@ -60,11 +68,13 @@ def cadastro():
         senha = generate_password_hash(request.form['senha'])
 
         try:
+            conn, cursor = get_db()
             cursor.execute("INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)", (nome, email, senha))
             conn.commit()
+            cursor.close()
+            conn.close()
             return redirect('/')
         except psycopg2.Error as e:
-            conn.rollback()
             return f"Erro ao cadastrar: {e.pgerror}"
 
     return render_template('register.html')
@@ -75,8 +85,14 @@ def login():
         email = request.form['email']
         senha = request.form['senha']
 
-        cursor.execute("SELECT id, nome, email, senha, is_admin FROM usuarios WHERE email = %s", (email,))
-        usuario = cursor.fetchone()
+        try:
+            conn, cursor = get_db()
+            cursor.execute("SELECT id, nome, email, senha, is_admin FROM usuarios WHERE email = %s", (email,))
+            usuario = cursor.fetchone()
+            cursor.close()
+            conn.close()
+        except Exception as e:
+            return f"Erro ao conectar ao banco: {e}"
 
         if usuario and check_password_hash(usuario[3], senha):
             session['usuario_id'] = usuario[0]
@@ -107,14 +123,26 @@ def logout():
 def admin():
     if not session.get('is_admin'):
         return redirect('/')
-    cursor.execute("SELECT nome, email FROM usuarios")
-    usuarios = cursor.fetchall()
+    try:
+        conn, cursor = get_db()
+        cursor.execute("SELECT nome, email FROM usuarios")
+        usuarios = cursor.fetchall()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        return f"Erro ao conectar ao banco: {e}"
     return render_template('admin.html', usuarios=usuarios)
 
 @app.route('/debug_admin')
 def debug_admin():
-    cursor.execute("SELECT nome, email, is_admin FROM usuarios")
-    usuarios = cursor.fetchall()
+    try:
+        conn, cursor = get_db()
+        cursor.execute("SELECT nome, email, is_admin FROM usuarios")
+        usuarios = cursor.fetchall()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        return f"Erro ao conectar ao banco: {e}"
     html = "<h2>🔍 Debug de Admins</h2><ul>"
     for nome, email, is_admin in usuarios:
         html += f"<li>{nome} — {email} — is_admin: {is_admin}</li>"
@@ -125,14 +153,26 @@ def debug_admin():
 def promover_admin():
     if 'usuario_id' not in session:
         return redirect('/')
-    cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE id = %s", (session['usuario_id'],))
-    conn.commit()
+    try:
+        conn, cursor = get_db()
+        cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE id = %s", (session['usuario_id'],))
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        return f"Erro ao conectar ao banco: {e}"
     return "✅ Você agora é admin! Faça logout e login novamente."
 
 @app.route('/forcar_admin')
 def forcar_admin():
-    cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE email = 'filipematos1821@gmail.com'")
-    conn.commit()
+    try:
+        conn, cursor = get_db()
+        cursor.execute("UPDATE usuarios SET is_admin = TRUE WHERE email = 'filipematos1821@gmail.com'")
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        return f"Erro ao conectar ao banco: {e}"
     return "✅ Conta promovida a admin com sucesso!"
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
@@ -155,9 +195,14 @@ def reset_password(token):
     if request.method == 'POST':
         nova_senha = request.form['senha']
         hash_senha = bcrypt.hashpw(nova_senha.encode('utf-8'), bcrypt.gensalt())
-        cur = conn.cursor()
-        cur.execute("UPDATE usuarios SET senha = %s WHERE email = %s", (hash_senha, email))
-        conn.commit()
+        try:
+            conn, cursor = get_db()
+            cursor.execute("UPDATE usuarios SET senha = %s WHERE email = %s", (hash_senha, email))
+            conn.commit()
+            cursor.close()
+            conn.close()
+        except Exception as e:
+            return f"Erro ao conectar ao banco: {e}"
         return "Senha atualizada com sucesso!"
     return render_template('reset_password.html')
 
