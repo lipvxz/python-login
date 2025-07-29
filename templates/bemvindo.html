@@ -36,5 +36,51 @@
 {% endif %}
         <a href="/logout" class="logout-btn">Sair</a>
     </div>
+    <div class="produtos-container">
+    <h2>🛒 Produtos em destaque</h2>
+    <div class="produto">
+        <img src="{{ url_for('static', filename='produtos/celular.jpg') }}" alt="Celular X1" width="200">
+        <h3>Celular X1</h3>
+        <p>📱 Smartphone moderno com câmera tripla e tela OLED.</p>
+        <p><strong>Preço:</strong> R$ 2.499,00</p>
+    </div>
+
+    <div class="produto">
+        <img src="{{ url_for('static', filename='produtos/headset.jpg') }}" alt="Headset Gamer" width="200">
+        <h3>Headset Gamer</h3>
+        <p>🎧 Áudio potente e design ergonômico para longas partidas.</p>
+        <p><strong>Preço:</strong> R$ 349,90</p>
+    </div>
+
+    <div class="produto">
+        <img src="{{ url_for('static', filename='produtos/teclado.jpg') }}" alt="Teclado Mecânico" width="200">
+        <h3>Teclado Mecânico RGB</h3>
+        <p>⌨️ Ideal para desenvolvedores e gamers exigentes.</p>
+        <p><strong>Preço:</strong> R$ 499,00</p>
+    </div>
+</div>
+    <div class="produtos-container">
+        <h2>🌟 Mais produtos disponíveis</h2>
+        <div class="produto">
+            <img src="{{ url_for('static', filename='produtos/livro.jpg') }}" alt="Livro de Python" width="200">
+            <h3>Livro de Python Avançado</h3>
+            <p>📚 Aprenda técnicas avançadas de programação em Python.</p>
+            <p><strong>Preço:</strong> R$ 89,90</p>
+        </div>
+
+        <div class="produto">
+            <img src="{{ url_for('static', filename='produtos/monitor.jpg') }}" alt="Monitor 4K" width="200">
+            <h3>Monitor 4K Ultra HD</h3>
+            <p>🖥️ Resolução incrível para trabalho e entretenimento.</p>
+            <p><strong>Preço:</strong> R$ 1.999,00</p>
+        </div>
+
+        <div class="produto">
+            <img src="{{ url_for('static', filename='produtos/ssd.jpg') }}" alt="SSD 1TB" width="200">
+            <h3>SSD 1TB NVMe</h3>
+            <p>⚡ Velocidade extrema para armazenamento de dados.</p>
+            <p><strong>Preço:</strong> R$ 599,00</p>
+        </div>
+    </div>
 </body>
 </html>
